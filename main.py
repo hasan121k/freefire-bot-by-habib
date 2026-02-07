@@ -6111,29 +6111,36 @@ async def MaiiiinE():
     Uid , Pw = '4464629538','B5594B5EA5F960CED641B1EFFB47E399489E9382147F4BB2B9CF5A0B2DEA47AD'
     
 
-    open_id , access_token = await GeNeRaTeAccEss(Uid , Pw)
-    if not open_id or not access_token: print("ErroR - InvaLid AccounT") ; return None
-    
-    PyL = await EncRypTMajoRLoGin(open_id , access_token)
-    MajoRLoGinResPonsE = await MajorLogin(PyL)
-    if not MajoRLoGinResPonsE: print("TarGeT AccounT => BannEd / NoT ReGisTeReD ! ") ; return None
-    
-    MajoRLoGinauTh = await DecRypTMajoRLoGin(MajoRLoGinResPonsE)
-    UrL = MajoRLoGinauTh.url
-    # In the MaiiiinE function, find and comment out these print statements:
-    os.system('clear')
-    print("🔄 Starting TCP Connections...")
-    print("📡 Connecting to Free Fire servers...")
-    print("🌐 Server connection established")
+            # ৬১১৪ নম্বর লাইন থেকে শুরু
+        try:
+            res = await Get_Access_Token() # আপনার আগের ফাংশনের নাম এখানে বসবে
+            open_id = res[0]
+            access_token = res[1]
+        except (ValueError, IndexError):
+            print("⚠️ Access token unpack issue handled.")
+            open_id, access_token = res, None # একটি বিকল্প মান প্রদান
 
-    region = MajoRLoGinauTh.region
+        if not open_id or not access_token:
+            print("❌ Login failed: Missing credentials")
+            return
 
-    ToKen = MajoRLoGinauTh.token
-    print("🔐 Authentication successful")
-    TarGeT = MajoRLoGinauTh.account_uid
-    key = MajoRLoGinauTh.key
-    iv = MajoRLoGinauTh.iv
-    timestamp = MajoRLoGinauTh.timestamp
+        PyL = await EncRypTMajoRLoGinReq(Uid, Pw, open_id, access_token)
+        MajoRLoGinResPonsE = await MajoRLoGin(PyL)
+        if not MajoRLoGinResPonsE: return
+
+        MajoRLoGinauTh = await DecRypTMajoRLoGinRes(MajoRLoGinResPonsE)
+        Url = MajoRLoGinauTh.url
+        region = MajoRLoGinauTh.region
+        ToKen = MajoRLoGinauTh.token
+        TarGeT = MajoRLoGinauTh.account
+        key = MajoRLoGinauTh.key
+        iv = MajoRLoGinauTh.iv
+        timestamp = MajoRLoGinauTh.timestamp
+        
+        os.system('clear')
+        print("🔄 Starting TCP Connection...")
+        # ৬১৩৬ নম্বর লাইন পর্যন্ত শেষ
+
     
     LoGinDaTa = await GetLoginData(UrL , PyL , ToKen)
     if not LoGinDaTa: print("ErroR - GeTinG PorTs From LoGin DaTa !") ; return None

@@ -6211,6 +6211,32 @@ async def StarTinG():
         except asyncio.TimeoutError: print("Token ExpiRed ! , ResTartinG")
         except Exception as e: print(f"ErroR TcP - {e} => ResTarTinG ...")
 
+# --- Keep Alive Server (Render-এর জন্য) ---
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "<h1>Bot is Online and Running!</h1>"
+
+def run_flask():
+    # রেন্ডার এই পোর্টে কানেক্ট হবে
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = threading.Thread(target=run_flask)
+    t.daemon = True
+    t.start()
+
+# --- মেইন এন্ট্রি পয়েন্ট ---
 if __name__ == '__main__':
-    threading.Thread(target=start_insta_api, daemon=True).start()
-    asyncio.run(StarTinG())
+    # ১. প্রথমে সার্ভার চালু হবে যাতে UptimeRobot 'Up' দেখায়
+    print("Starting Keep-Alive server...")
+    keep_alive()
+
+    # ২. এরপর আপনার বটের মেইন কাজ শুরু হবে
+    print("Starting Free Fire Bot...")
+    try:
+        # আপনার স্ক্রিনশট অনুযায়ী বটের মেইন ফাংশন হলো StarTinG()
+        asyncio.run(StarTinG())
+    except KeyboardInterrupt:
+        print("Bot Stopped.")
